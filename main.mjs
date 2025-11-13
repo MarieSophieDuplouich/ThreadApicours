@@ -8,6 +8,7 @@ async function main() {
             username: "root",
             password: "root"
         };
+        // ----  0. Connexion au serveur mysql ---- 
         // Connexion à la BDD
         const sequelize = new Sequelize(login.database, login.username, login.password, {
             host: '127.0.0.1',
@@ -15,20 +16,30 @@ async function main() {
         });
 
 
-
+        // ----  1. Création de tables via les models ---- 
         // Création des models (tables) -------------//
-        sequelize.define("User", {
+        const User = sequelize.define("User", {
             username: DataTypes.STRING,
             email: DataTypes.STRING,
             password: DataTypes.STRING
         });
+        const Task = sequelize.define("Task", {
+            title: DataTypes.TEXT,
+            content: DataTypes.TEXT
+        });
+
+        User.hasMany(Task);
+        Task.belongsTo(User);
+
+
+
+        // CREER LES TABLES AVANT LA FONCTION sync !
         // -----------------------------------------//
-
-
         await sequelize.sync({ force: true });
         console.log("Connexion à la BDD effectuée")
-        
-        const User = sequelize.models.User;
+
+
+        // ----  2. Insertion de lignes ---- 
         // INSERT INTO User
         const newUser = await User.create({
             username: "massinissa",
@@ -41,47 +52,49 @@ async function main() {
             email: "billy@mail.com",
             password: "1234"
         });
-        // INSERT INTO User
-        const newUser3 = await User.create({
-            username: "Boubou",
-            email: "boubou@mail.com",
-            password: "123456789AZERTY!"
-        });
 
-        // INSERT INTO User
-        const newUser4 = await User.create({
-            username: "Hérisson au chocolat",
-            email: "HC123@mail.com",
-            password: "123456789AZERTY!"
-        });
-        console.log(newUser.username);
-        console.log(newUser2.username);
-        console.log(newUser4.username);
+        // DELETE User
+        await User.destroy({
+            where: {
+                username: "massinissa"
+            }
+        })
 
 
-        // SELECT * FROM User après ajout des deux users
+        // ---- 3. Sélection de lignes (SELECT) ---- 
+        // SELECT * FROM User après ajout des deux users 
         let allUsers = await User.findAll();
 
         // J'affiche l'email de chaque utilisateur
         allUsers.forEach(user => {
             console.log(user.email)
         });
-         const userById = await User.findByPk(2); // 2 est l'id de Billy
-console.log(userById);
 
-        // DELETE User
-await User.destroy({
-    where : {
-        username : "massinissa"
-    }
-})
-  
-const updatedValues_obj = { email:"newmailbilly@mail.com" };
-await User.update(updatedValues_obj,{
-    where : {
-        username : "billy"
-    }
-})
+        // Je récupère un utilisateur en fonction de son id
+        const userById = await User.findByPk(2);
+        console.log(userById);
+
+        // Création d'une tâche de façon traditionnelle
+        const otherTask = await Task.create({
+            title: "Faire les courses",
+            content: "Du savon, des frites et une Xbox 360",
+            UserId : userById.id
+        });
+
+
+        // ---- 4. Les méthodes mixins pour créer et accéder aux données lors d'une relation `OneToMany`.-----------//
+        // Création de plusieurs tâches à partir d'un utilisateur
+        await userById.createTask({ title: "Chien", content: "Sortir le chien" });
+        await userById.createTask({ title: "le chat", content: "nourrir le chat" });
+
+
+        // SELECT toutes les tâches d'un utilisateur
+        const allUserTasks = await userById.getTasks();
+
+        console.log(allUserTasks.map(task=>task.content))
+        // SELECT toutes les tâches
+        console.log((await Task.findAll()).map(task=>task.content));
+
 
 
 
@@ -92,5 +105,3 @@ await User.update(updatedValues_obj,{
     }
 }
 main()
-
-//le true force se fait au niveau du create table les insert into il faut les mettre après
