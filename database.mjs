@@ -27,10 +27,9 @@ export async function loadSequelize() {
         });
 
         const Task = sequelize.define("Task", {
+            title : DataTypes.TEXT,
             content: DataTypes.TEXT,
-            datetime: DataTypes.DATE,
-
-
+            datetime: DataTypes.DATE
         });
 
 
@@ -79,7 +78,7 @@ export async function loadSequelize() {
 
 
         // Création d'un post
-        const otherPost = await Post.create({
+        const otherTask = await Task.create({
             title: "Faire les courses",
             content: "Du savon, des frites et une Xbox 360",
         });
@@ -105,8 +104,8 @@ export async function loadSequelize() {
 
         // ---- 4. Les méthodes mixins pour créer et accéder aux données lors d'une relation `OneToMany`.-----------//
         // Création de plusieurs tâches à partir d'un utilisateur
-        await userById.createTask({ title: "Chien", content: "Sortir le chien" });
-        await userById.createTask({ title: "le chat", content: "nourrir le chat" });
+        await userById.createTask({ title: "Chien", content: "Sortir le chien"});
+        await userById.createTask({ title: "le chat", content: "nourrir le chat"});
 
 
 
