@@ -26,31 +26,17 @@ export async function loadSequelize() {
             password: DataTypes.STRING
         });
 
-        const Comment = sequelize.define("Comment", {
+        const Task = sequelize.define("Task", {
             content: DataTypes.TEXT,
             datetime: DataTypes.DATE,
 
 
         });
 
-        const Post = sequelize.define("Post", {
-            title: DataTypes.TEXT,
-            content: DataTypes.TEXT,
-            datetime: DataTypes.DATE,
 
-
-        });
-
-        //comment s'appelle cette partie ? les relations les define avanr syn les .create après
-        User.hasMany(Comment);//ligne ajoute foreign key
-        Comment.belongsTo(User);
-
-        User.hasMany(Post);
-        Post.belongsTo(User);
-
-        Post.hasMany(Comment);
-        Comment.belongsTo(Post);
-
+        // les relations les define avant le sync les .create après
+        User.hasMany(Task);//ligne ajoute foreign key
+        Task.belongsTo(User);
 
 
         // CREER LES TABLES AVANT LA FONCTION sync !
@@ -98,15 +84,7 @@ export async function loadSequelize() {
             content: "Du savon, des frites et une Xbox 360",
         });
 
-        //création commentaires/comments
-
-        const otherComment = await Comment.create({
-            content: "mes commentaires",
-            datetime: new Date(Date.now()),
-            userId: userById.id,
-            postId: otherPost.id
-        });
-
+   
         // ---- 3. Sélection de lignes (SELECT) ---- 
         // SELECT * FROM User après ajout des deux users 
         let allUsers = await User.findAll();
@@ -117,18 +95,18 @@ export async function loadSequelize() {
         });
 
         // SELECT toutes les tâches d'un utilisateur
-        const allUserPosts = await userById.getPosts();
+        const allUserTasks = await userById.getTasks();
 
-        console.log(allUserPosts.map(post => post.content))
+        console.log(allUserTasks.map(task => task.content))
         // SELECT toutes les tâches
-        console.log((await Post.findAll()).map(post => post.content));
+        console.log((await Task.findAll()).map(task => task.content));
 
 
 
         // ---- 4. Les méthodes mixins pour créer et accéder aux données lors d'une relation `OneToMany`.-----------//
         // Création de plusieurs tâches à partir d'un utilisateur
-        await userById.createPost({ title: "Chien", content: "Sortir le chien" });
-        await userById.createPost({ title: "le chat", content: "nourrir le chat" });
+        await userById.createTask({ title: "Chien", content: "Sortir le chien" });
+        await userById.createTask({ title: "le chat", content: "nourrir le chat" });
 
 
 
