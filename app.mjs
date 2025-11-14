@@ -49,7 +49,7 @@ async function main() {
         })
 
                 app.get("/random10",async (req,res)=>{
-           res.send(Math.random());
+           res.send(Math.random()*10);
         })
 
 
