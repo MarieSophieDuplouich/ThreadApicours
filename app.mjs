@@ -30,8 +30,16 @@ async function main() {
             res.json(tasks);
         })
 
+         app.get("/users",async (req,res)=>{
+            const User = sequelize.models.User;
+            const users = await User.findAll()
+            res.json(users);
+        })
 
-        //je n'ai pas fini
+
+        //Postman je suis GET /user/:id 
+
+        
            app.get("/goodbye",async (req,res)=>{
            res.send("<p>Goodbye World</p>");
         })
@@ -57,7 +65,7 @@ async function main() {
        
 
         app.listen(3001, () => {
-            console.log("Serveur démarré sur http://localhost:3001");
+            console.log("Serveur démarré sur http://localhost:3001/");
         });
 
 
