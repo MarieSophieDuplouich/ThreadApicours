@@ -37,7 +37,7 @@ async function main() {
         })
 
 
-        //Postman je suis GET /user/:id  //Je n'ai pas fini attention !!!!
+        //Postman je suis GET /user/:id get user id postman fini"
         app.get("/user/:id", async (req, res) => {
             console.log(req.params);
             const User = sequelize.models.User;
