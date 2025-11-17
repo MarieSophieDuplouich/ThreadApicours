@@ -18,51 +18,60 @@ async function main() {
         const sequelize = await loadSequelize();
         const app = express();
 
-        app.get("/",(req,res)=>{
+        app.get("/", (req, res) => {
 
 
-            res.json({message:"Hello api 7"})
+            res.json({ message: "Hello api 7" })
         })
 
-        app.get("/tasks",async (req,res)=>{
+        app.get("/tasks", async (req, res) => {
             const Task = sequelize.models.Task;
             const tasks = await Task.findAll()
             res.json(tasks);
         })
 
-         app.get("/users",async (req,res)=>{
+        app.get("/users", async (req, res) => {
             const User = sequelize.models.User;
             const users = await User.findAll()
             res.json(users);
         })
 
 
-        //Postman je suis GET /user/:id 
+        //Postman je suis GET /user/:id  //Je n'ai pas fini attention !!!!
+        app.get("/user/:id", async (req, res) => {
+            console.log(req.params);
+            const User = sequelize.models.User;
+            const userId = req.params.id;
+            const user = await User.findByPk(userId);
+            res.json(user)
 
-        
-           app.get("/goodbye",async (req,res)=>{
-           res.send("<p>Goodbye World</p>");
-        })
-
-              app.get("/status",async (req,res)=>{
-           res.send("<p>Server is running</p>");
-        })
-
-               app.get("/date",async (req,res)=>{
-           res.send(new Date().toISOString());
-        })
-
-               app.get("/random",async (req,res)=>{
-           res.send(Math.random());
-        })
-
-                app.get("/random10",async (req,res)=>{
-           res.send(Math.random()*10);
         })
 
 
-     
        
+        app.get("/goodbye", async (req, res) => {
+            res.send("<p>Goodbye World</p>");
+        })
+
+        app.get("/status", async (req, res) => {
+            res.send("<p>Server is running</p>");
+        })
+
+        app.get("/date", async (req, res) => {
+            res.send(new Date().toISOString());
+        })
+
+        app.get("/random", async (req, res) => {
+            res.send(Math.random());
+        })
+
+        app.get("/random10", async (req, res) => {
+            res.send(Math.random() * 10);
+        })
+
+
+
+
 
         app.listen(3001, () => {
             console.log("Serveur démarré sur http://localhost:3001/");

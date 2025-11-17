@@ -63,11 +63,11 @@ export async function loadSequelize() {
         });
 
         // DELETE User
-        await User.destroy({
-            where: {
-                username: "massinissa"
-            }
-        })
+        // await User.destroy({
+        //     where: {
+        //         username: "massinissa"
+        //     }
+        // })
 
 
 
