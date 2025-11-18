@@ -17,6 +17,41 @@ async function main() {
     try {
         const sequelize = await loadSequelize();
         const app = express();
+        const Task = sequelize.models.Task;
+        const User = sequelize.models.User;
+        //    const headers = new Headers();
+        //     headers.append("Content-Type", "application/json");
+        //     fetch("http://localhost:8000/task", {
+        //         method: "POST",
+        //         headers: headers,
+        //         body: JSON.stringify({ title: "Faire ses devoirs", content: "tout de suite", userId: 1 })
+        //     })
+
+        // je place le middleware express.json AVANT la définition des routes de mon serveur
+        app.use(express.json());
+
+        app.post("/task", async (request, response) => {
+            console.log(request.body);
+            const newTaskData = request.body;
+            try {
+                // +
+                const newTask = await Task.create({
+                    title: newTaskData.title,
+                    content: newTaskData.content,
+                    UserId: 1
+                });
+                response.json(newTask);
+            } catch (error) {
+                console.log(error);
+                response.status(500).json({ error: "Erreur lors de la création de la tâche" });
+            }
+        });
+
+        app.get("/tasks", async (request, response) => {
+            const tasks = await Task.findAll();
+            response.json(tasks);
+        });
+
 
         app.get("/", (req, res) => {
 
@@ -48,7 +83,7 @@ async function main() {
         })
 
 
-       
+
         app.get("/goodbye", async (req, res) => {
             res.send("<p>Goodbye World</p>");
         })
@@ -68,6 +103,22 @@ async function main() {
         app.get("/random10", async (req, res) => {
             res.send(Math.random() * 10);
         })
+
+
+        //         POST /task (pour l'utilisateur 1 par défaut)
+        // En développement web front-end, il est d'usage d'envoyer des données complexes via le body d'une requête HTTP.
+
+        // Par exemple ici j'envoie une requête POST au back-end pour ajouter une tâche à l'utilisateur 1 (Billy).
+        // Retenez ceci :
+
+        // Il est impossible d'utiliser la méthode GET pour envoyer des données au back-end.
+        // Le contenu JSON se trouve dans le body de la requête HTTP du client.
+        // Il est obligatoire de préciser le header Content-Type: application/json pour que le back-end fonctionne.
+        // Il nous faut donc :
+
+        // Décoder le body JSON lors de la réception de la requête.
+        // Lire le body.
+        // L'ajouter dans la table Task.
 
 
 
