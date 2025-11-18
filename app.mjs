@@ -39,6 +39,7 @@ async function main() {
                     title: newTaskData.title,
                     content: newTaskData.content,
                     UserId: 1
+          
                 });
                 response.json(newTask);
             } catch (error) {

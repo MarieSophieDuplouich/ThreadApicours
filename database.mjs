@@ -100,12 +100,13 @@ export async function loadSequelize() {
         // SELECT toutes les tâches
         console.log((await Task.findAll()).map(task => task.content));
 
-
+           
 
         // ---- 4. Les méthodes mixins pour créer et accéder aux données lors d'une relation `OneToMany`.-----------//
         // Création de plusieurs tâches à partir d'un utilisateur
         await userById.createTask({ title: "Chien", content: "Sortir le chien"});
         await userById.createTask({ title: "le chat", content: "nourrir le chat"});
+ 
 
 
 
